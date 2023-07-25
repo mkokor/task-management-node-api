@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/mkokor/task-manager-node-api/issues"
   },
-  "homepage": "https://github.com/mkokor/task-manager-node-api#readme"
+  "homepage": "https://github.com/mkokor/task-manager-node-api#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
