@@ -5,12 +5,14 @@ const getAllTasks = (req, res) => {
 
 const createTask = (req, res) => {
   res.status(200)
-     .send("Create Task");
+     .json(req.body);
 }
 
 const getTask = (req, res) => {
   res.status(200)
-     .send("Read Task");
+     .json({
+      "test": "test"
+     });
 }
 
 const updateTask = (req, res) => {
