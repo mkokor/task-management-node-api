@@ -5,5 +5,7 @@ dotenv.config();
 
 
 module.exports = {
-  "connectionString": process.env.DB_CONNECTION_STRING
+  "database": {
+    "connectionString": process.env.DB_CONNECTION_STRING
+  }
 }
