@@ -23,7 +23,11 @@ const getTask = async (req, res) => {
     const result = await taskService.getTaskById(req.params.id);
     res.status(200).json(result);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    const status =
+      error.message == "Task with provided identifier does not exist."
+        ? 404
+        : 500;
+    res.status(status).json({ message: error.message });
   }
 };
 
