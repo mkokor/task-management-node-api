@@ -1,5 +1,11 @@
 const taskService = require("../services/tasks.service");
 
+const setStatusCode = (error) => {
+  return error.message == "Task with provided identifier does not exist."
+    ? 404
+    : 500;
+};
+
 const getAllTasks = async (req, res) => {
   try {
     const result = await taskService.getAllTasks();
@@ -23,11 +29,7 @@ const getTask = async (req, res) => {
     const result = await taskService.getTaskById(req.params.id);
     res.status(200).json(result);
   } catch (error) {
-    const status =
-      error.message == "Task with provided identifier does not exist."
-        ? 404
-        : 500;
-    res.status(status).json({ message: error.message });
+    res.status(setStatusCode(error)).json({ message: error.message });
   }
 };
 
@@ -35,8 +37,13 @@ const updateTask = (req, res) => {
   res.status(200).send("Update Task");
 };
 
-const deleteTask = (req, res) => {
-  res.status(200).send("Delete Task");
+const deleteTask = async (req, res) => {
+  try {
+    await taskService.deleteTask(req.params.id);
+    res.status(200).json({ message: "Task successfully deleted." });
+  } catch (error) {
+    res.status(setStatusCode(error)).json({ message: error.message });
+  }
 };
 
 module.exports = {
