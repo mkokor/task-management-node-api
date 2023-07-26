@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const tasksRoutes = require("./routes/tasks-routes");
+const tasksRoutes = require("./routes/tasks.routes");
 const environment = require("./config/environment");
 const connectDatabase = require("./database/connection");
 

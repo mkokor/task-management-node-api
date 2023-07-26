@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const TaskSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "Task title field is required!"],
-    maxlength: [20, "Title cannot contain more than 20 characters!"],
+    required: [true, "Task title field is required."],
+    maxlength: [20, "Title cannot contain more than 20 characters."],
     trim: true,
   },
   completed: {
