@@ -5,6 +5,10 @@ const validateIdStructure = (id) => {
     throw new Error("Invalid task identifier.");
 };
 
+const validateTaskValue = (task) => {
+  if (!task) throw new Error("Task with provided identifier does not exist.");
+};
+
 const createTask = async (task) => {
   const result = await Task.create(task);
   return result;
@@ -18,14 +22,23 @@ const getAllTasks = async () => {
 const getTaskById = async (id) => {
   validateIdStructure(id);
   const task = await Task.findOne({ _id: id });
-  if (!task) throw new Error("Task with provided identifier does not exist.");
+  validateTaskValue(task);
   return task;
 };
 
 const deleteTask = async (id) => {
   validateIdStructure(id);
   const task = await Task.findOneAndDelete({ _id: id });
-  if (!task) throw new Error("Task with provided identifier does not exist.");
+  validateTaskValue(task);
+};
+
+const updateTask = async (id, newValues) => {
+  const updatedTask = await Task.findOneAndUpdate({ _id: id }, newValues, {
+    new: true,
+    runValidators: true,
+  });
+  validateTaskValue(updatedTask);
+  return updatedTask;
 };
 
 module.exports = {
@@ -33,4 +46,5 @@ module.exports = {
   getAllTasks,
   getTaskById,
   deleteTask,
+  updateTask,
 };

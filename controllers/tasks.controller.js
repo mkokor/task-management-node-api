@@ -1,3 +1,4 @@
+const Task = require("../models/Task");
 const taskService = require("../services/tasks.service");
 
 const setStatusCode = (error) => {
@@ -33,8 +34,13 @@ const getTask = async (req, res) => {
   }
 };
 
-const updateTask = (req, res) => {
-  res.status(200).send("Update Task");
+const updateTask = async (req, res) => {
+  try {
+    const result = await taskService.updateTask(req.params.id, req.body);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(setStatusCode(error)).json({ message: error.message });
+  }
 };
 
 const deleteTask = async (req, res) => {
