@@ -7,11 +7,9 @@ const connectDatabase = require("./database/connection");
 const app = express();
 const PORT = 3000;
 
-
 app.use(bodyParser.json());
 
 app.use("/api/tasks", tasksRoutes);
-
 
 const runServer = async () => {
   try {
@@ -22,6 +20,6 @@ const runServer = async () => {
   } catch (error) {
     console.log("Error occured while connecting to the database.");
   }
-}
+};
 
 runServer();
