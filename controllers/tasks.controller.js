@@ -1,22 +1,30 @@
 const taskService = require("../services/tasks.service");
 
-const getAllTasks = (req, res) => {
-  res.status(200).send("All Tasks");
-};
-
-const createTask = async (req, res) => {
+const getAllTasks = async (req, res) => {
   try {
-    const task = await taskService.createTask(req.body);
-    res.status(201).json(task);
+    const result = await taskService.getAllTasks();
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error });
   }
 };
 
-const getTask = (req, res) => {
-  res.status(200).json({
-    test: "test",
-  });
+const createTask = async (req, res) => {
+  try {
+    const result = await taskService.createTask(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
+const getTask = async (req, res) => {
+  try {
+    const result = await taskService.getTaskById(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
 };
 
 const updateTask = (req, res) => {
