@@ -1,12 +1,17 @@
 const Task = require("../models/Task");
+const { CustomApiError } = require("../errors/custom-api-error");
 
 const validateIdStructure = (id) => {
   if (!id.match(/^[0-9a-fA-F]{24}$/))
-    throw new Error("Invalid task identifier.");
+    throw new CustomApiError("Invalid task identifier.", 400);
 };
 
 const validateTaskValue = (task) => {
-  if (!task) throw new Error("Task with provided identifier does not exist.");
+  if (!task)
+    throw new CustomApiError(
+      "Task with provided identifier does not exist.",
+      404
+    );
 };
 
 const createTask = async (task) => {
