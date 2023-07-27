@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const tasksRoutes = require("./routes/tasks.routes");
 const environment = require("./config/environment");
 const connectDatabase = require("./database/connection");
+const notFoundRoute = require("./middleware/not-found");
 
 const app = express();
 const PORT = 3000;
@@ -10,6 +11,7 @@ const PORT = 3000;
 app.use(bodyParser.json());
 
 app.use("/api/tasks", tasksRoutes);
+app.use(notFoundRoute);
 
 const runServer = async () => {
   try {
