@@ -1,11 +1,6 @@
 const Task = require("../models/Task");
 const { CustomApiError } = require("../errors/custom-api-error");
 
-const validateIdStructure = (id) => {
-  if (!id.match(/^[0-9a-fA-F]{24}$/))
-    throw new CustomApiError("Invalid task identifier.", 400);
-};
-
 const validateTaskValue = (task) => {
   if (!task)
     throw new CustomApiError(
@@ -25,14 +20,12 @@ const getAllTasks = async () => {
 };
 
 const getTaskById = async (id) => {
-  validateIdStructure(id);
   const task = await Task.findOne({ _id: id });
   validateTaskValue(task);
   return task;
 };
 
 const deleteTask = async (id) => {
-  validateIdStructure(id);
   const task = await Task.findOneAndDelete({ _id: id });
   validateTaskValue(task);
 };

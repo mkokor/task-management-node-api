@@ -1,6 +1,7 @@
 const { CustomApiError } = require("../errors/custom-api-error");
 
 const errorHandler = (err, req, res, next) => {
+  console.log(err);
   const { status, message } =
     err instanceof CustomApiError
       ? { status: err.statusCode, message: err.message }
