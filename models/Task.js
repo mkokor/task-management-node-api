@@ -14,7 +14,7 @@ const TaskSchema = new mongoose.Schema({
   },
 });
 
-// Pre middleware function is set up mannually so that the server can control Mongoose error.
+// Pre middleware function is set up mannually so that the server can control Mongoose validation errors.
 TaskSchema.pre("validate", function () {
   if (!this.title) throw new CustomApiError("Title field is required.", 400);
   if (this.title.length > 20)
