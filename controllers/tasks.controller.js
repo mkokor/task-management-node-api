@@ -1,6 +1,5 @@
-const Task = require("../models/Task");
 const taskService = require("../services/tasks.service");
-const asyncWrapper = require("../middleware/async-wrapper");
+const { asyncWrapper } = require("../middleware/async-wrapper");
 
 const getAllTasks = asyncWrapper(async (req, res) => {
   const result = await taskService.getAllTasks();

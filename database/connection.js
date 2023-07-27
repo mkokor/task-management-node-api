@@ -4,4 +4,4 @@ const connectDatabase = (connectionString) => {
   return mongoose.connect(connectionString);
 };
 
-module.exports = connectDatabase;
+module.exports = { connectDatabase };

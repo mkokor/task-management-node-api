@@ -8,4 +8,4 @@ const asyncWrapper = (routeHandler) => {
   };
 };
 
-module.exports = asyncWrapper;
+module.exports = { asyncWrapper };

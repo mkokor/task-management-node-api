@@ -1,4 +1,4 @@
-const Task = require("../models/Task");
+const { Task } = require("../models/Task");
 const { CustomApiError } = require("../errors/custom-api-error");
 
 const validateTaskValue = (task) => {

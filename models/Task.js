@@ -24,4 +24,6 @@ TaskSchema.pre("validate", function () {
     );
 });
 
-module.exports = mongoose.model("Task", TaskSchema);
+const Task = mongoose.model("Task", TaskSchema);
+
+module.exports = { Task };

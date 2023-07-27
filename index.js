@@ -2,10 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const tasksRoutes = require("./routes/tasks.routes");
 const environment = require("./config/environment");
-const connectDatabase = require("./database/connection");
-const notFoundRoute = require("./middleware/not-found");
-const errorHandler = require("./middleware/error-handler");
-const taskIdValidation = require("./middleware/task-id-validation");
+const { connectDatabase } = require("./database/connection");
+const { notFoundRoute } = require("./middleware/not-found");
+const { errorHandler } = require("./middleware/error-handler");
+const { taskIdValidation } = require("./middleware/task-id-validation");
 
 const app = express();
 const port = environment.application.port;

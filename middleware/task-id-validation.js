@@ -5,4 +5,4 @@ const taskIdValidation = (req, res, next) => {
   throw new CustomApiError("Invalid task identifier.", 400);
 };
 
-module.exports = taskIdValidation;
+module.exports = { taskIdValidation };
