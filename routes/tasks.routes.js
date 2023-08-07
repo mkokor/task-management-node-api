@@ -1,12 +1,13 @@
 const express = require("express");
 const tasksController = require("../controllers/tasks.controller");
+const { validateTaskFields } = require("../middleware/task-fields-validation");
 
 const router = express.Router();
 
 router
   .route("/")
   .get(tasksController.getAllTasks)
-  .post(tasksController.createTask);
+  .post(validateTaskFields, tasksController.createTask);
 
 router
   .route("/:id")
