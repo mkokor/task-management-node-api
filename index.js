@@ -2,6 +2,7 @@ require("express-async-errors");
 const express = require("express");
 const bodyParser = require("body-parser");
 const tasksRoutes = require("./routes/tasks.routes");
+const authenticationRoutes = require("./routes/authentication.routes");
 const environment = require("./config/environment");
 const { connectDatabase } = require("./config/database");
 const { notFoundRoute } = require("./middleware/not-found");
@@ -14,6 +15,7 @@ const port = environment.application.port;
 app.use(bodyParser.json());
 app.use("/api/tasks/:id", taskIdValidation);
 
+app.use("/api/authentication", authenticationRoutes);
 app.use("/api/tasks", tasksRoutes);
 app.use(notFoundRoute);
 
