@@ -1,6 +1,7 @@
 const { User } = require("../models/User");
 const cryptoHandler = require("../utils/crypto-handler");
 const errors = require("../errors/errors");
+const tokenUtility = require("../utils/token-utility");
 
 const validatePasswordStrength = (password) => {
   // minimum 8 characters
@@ -13,7 +14,7 @@ const validatePasswordStrength = (password) => {
 };
 
 const getUserByFieldValue = async (fieldName, value) => {
-  const user = await User.findOne({ [fieldName]: value }).populate("roles");
+  const user = await User.findOne({ [fieldName]: value });
   return user;
 };
 
@@ -47,6 +48,37 @@ const registerUser = async (user) => {
   };
 };
 
+const getUserByUsername = async (username) => {
+  const user = await getUserByFieldValue("username", username);
+  if (!user)
+    throw new errors.NotFoundError(
+      "User with provided username does not exist."
+    );
+  return user;
+};
+
+const validatePassword = async (plaintextPassword, passwordHash) => {
+  const passwordMatch = await cryptoHandler.compare(
+    plaintextPassword,
+    passwordHash
+  );
+  if (!passwordMatch)
+    throw new errors.UnauthenticatedError(
+      "Password does not match the username."
+    );
+};
+
+const logInUser = async (loginData) => {
+  const user = await getUserByUsername(loginData.username);
+  await validatePassword(loginData.password, user.passwordHash);
+  //const refreshToken = await createRefreshToken(user);
+  return {
+    accessToken: tokenUtility.generateAccessToken(user),
+    //refreshToken: refreshToken,
+  };
+};
+
 module.exports = {
   registerUser,
+  logInUser,
 };

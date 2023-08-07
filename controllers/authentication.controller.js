@@ -5,6 +5,15 @@ const registerUser = async (req, res) => {
   res.status(201).json(result);
 };
 
+const logInUser = async (req, res) => {
+  const { accessToken, refreshToken } = await authenticationService.logInUser(
+    req.body
+  );
+  //setRefreshTokenCookie(res, refreshToken);
+  res.status(200).json({ accessToken });
+};
+
 module.exports = {
   registerUser,
+  logInUser,
 };

@@ -1,5 +1,6 @@
 const express = require("express");
 const authenticationController = require("../controllers/authentication.controller");
+const { validateLoginData } = require("../middleware/login-data-validation");
 const {
   validateRegistrationData,
 } = require("../middleware/registration-data-validation");
@@ -11,5 +12,7 @@ router.post(
   validateRegistrationData,
   authenticationController.registerUser
 );
+
+router.post("/login", validateLoginData, authenticationController.logInUser);
 
 module.exports = router;
