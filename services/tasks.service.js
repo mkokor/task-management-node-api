@@ -1,13 +1,5 @@
 const { Task } = require("../models/Task");
-const { CustomApiError } = require("../errors/custom-api-error");
-
-const validateTaskValue = (task) => {
-  if (!task)
-    throw new CustomApiError(
-      "Task with provided identifier does not exist.",
-      404
-    );
-};
+const errors = require("../errors/errors");
 
 const createTask = async (task) => {
   const result = await Task.create(task);
@@ -21,7 +13,10 @@ const getAllTasks = async () => {
 
 const getTaskById = async (id) => {
   const task = await Task.findOne({ _id: id });
-  validateTaskValue(task);
+  if (!task)
+    throw new errors.NotFoundError(
+      "Task with provided identifier does not exist."
+    );
   return task;
 };
 
