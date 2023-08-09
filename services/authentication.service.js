@@ -1,4 +1,5 @@
 const { User } = require("../models/User");
+const { RefreshToken } = require("../models/RefreshToken");
 const cryptoHandler = require("../utils/crypto-handler");
 const errors = require("../errors/errors");
 const tokenUtility = require("../utils/token-utility");
@@ -68,13 +69,22 @@ const validatePassword = async (plaintextPassword, passwordHash) => {
     );
 };
 
+const createRefreshToken = async (user) => {
+  const refreshTokenValue = tokenUtility.generateRefreshToken(user);
+  await RefreshToken.create({
+    valueHash: await cryptoHandler.encrypt(refreshTokenValue),
+    owner: user._id,
+  });
+  return refreshTokenValue;
+};
+
 const logInUser = async (loginData) => {
   const user = await getUserByUsername(loginData.username);
   await validatePassword(loginData.password, user.passwordHash);
-  //const refreshToken = await createRefreshToken(user);
+  const refreshToken = await createRefreshToken(user);
   return {
     accessToken: tokenUtility.generateAccessToken(user),
-    //refreshToken: refreshToken,
+    refreshToken: refreshToken,
   };
 };
 
