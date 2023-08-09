@@ -22,7 +22,17 @@ const logInUser = async (req, res) => {
   res.status(200).json({ accessToken });
 };
 
+const refreshAccessToken = async (req, res) => {
+  const { accessToken, refreshToken } =
+    await authenticationService.refreshAccessToken(req.cookies.refreshToken);
+  setRefreshTokenCookie(res, refreshToken);
+  res.status(200).json({
+    accessToken,
+  });
+};
+
 module.exports = {
   registerUser,
   logInUser,
+  refreshAccessToken,
 };

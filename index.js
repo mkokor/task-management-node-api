@@ -1,6 +1,7 @@
 require("express-async-errors");
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const tasksRoutes = require("./routes/tasks.routes");
 const authenticationRoutes = require("./routes/authentication.routes");
 const environment = require("./config/environment");
@@ -13,6 +14,8 @@ const app = express();
 const port = environment.application.port;
 
 app.use(bodyParser.json());
+app.use(cookieParser());
+
 app.use("/api/tasks/:id", taskIdValidation);
 
 app.use("/api/authentication", authenticationRoutes);

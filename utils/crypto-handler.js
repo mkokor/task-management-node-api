@@ -10,8 +10,12 @@ const encrypt = async (value) => {
 };
 
 const compare = async (plaintext, encryptedValue) => {
-  const result = await bcrypt.compare(plaintext, encryptedValue);
-  return result;
+  try {
+    const result = await bcrypt.compare(plaintext, encryptedValue);
+    return result;
+  } catch (error) {
+    throw new Error("Something went wrong.");
+  }
 };
 
 module.exports = {

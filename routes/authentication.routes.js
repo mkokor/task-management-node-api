@@ -15,4 +15,9 @@ router.post(
 
 router.post("/login", validateLoginData, authenticationController.logInUser);
 
+router.post(
+  "/access-token-refresh",
+  authenticationController.refreshAccessToken
+);
+
 module.exports = router;

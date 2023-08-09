@@ -88,7 +88,50 @@ const logInUser = async (loginData) => {
   };
 };
 
+const getRefreshTokenByValue = async (value) => {
+  const refreshTokens = await RefreshToken.find().populate("owner");
+  const result = await Promise.all(
+    refreshTokens.filter(async (refreshToken) => {
+      const validation = await cryptoHandler.compare(
+        value,
+        refreshToken.valueHash
+      );
+      return validation;
+    })
+  );
+  if (result.length === 0)
+    throw new errors.UnauthenticatedError("Invalid refresh token.");
+  return result[0];
+};
+
+const deleteRefreshToken = async (refreshTokenValue) => {
+  const refreshToken = await getRefreshTokenByValue(refreshTokenValue);
+  await RefreshToken.findByIdAndDelete({ _id: refreshToken._id });
+};
+
+const validateRefreshToken = async (refreshTokenValue) => {
+  const refreshToken = await getRefreshTokenByValue(refreshTokenValue);
+  try {
+    await tokenUtility.verifyRefreshToken(refreshTokenValue);
+  } catch (error) {
+    await deleteRefreshToken(refreshTokenValue);
+    throw new errors.UnauthenticatedError("Invalid refresh token.");
+  }
+  return refreshToken.owner;
+};
+
+const refreshAccessToken = async (refreshTokenValue) => {
+  const user = await validateRefreshToken(refreshTokenValue);
+  await deleteRefreshToken(refreshTokenValue);
+  const refreshToken = await createRefreshToken(user);
+  return {
+    accessToken: tokenUtility.generateAccessToken(user),
+    refreshToken,
+  };
+};
+
 module.exports = {
   registerUser,
   logInUser,
+  refreshAccessToken,
 };
