@@ -1,17 +1,15 @@
 const { User } = require("../models/User");
 const { RefreshToken } = require("../models/RefreshToken");
 const cryptoHandler = require("../utils/crypto-handler");
-const errors = require("../errors/errors");
 const tokenUtility = require("../utils/token-utility");
+const errors = require("../errors/errors");
 
 const validatePasswordStrength = (password) => {
   // minimum 8 characters
   // minimum one digit
   // minimum one special character
   if (!password.match(/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/))
-    throw new errors.BadRequestError(
-      "Password needs to contain minimum of 8 characters, one digit and one special character."
-    );
+    throw new errors.BadRequestError("Unsecure password.");
 };
 
 const getUserByFieldValue = async (fieldName, value) => {
@@ -33,20 +31,9 @@ const checkEmailAvailabilty = async (email) => {
 
 // This function convert password field of user to passwordHash field (field name and field value).
 const hashPassword = async (user) => {
-  user.passwordHash = await cryptoHandler.encrypt(user.password);
+  user.passwordHash = await cryptoHandler.hash(user.password);
   delete user.password;
   return user;
-};
-
-const registerUser = async (user) => {
-  await checkUsernameAvailabilty(user.username);
-  await checkEmailAvailabilty(user.email);
-  validatePasswordStrength(user.password);
-  user = await hashPassword(user);
-  await User.create(user);
-  return {
-    message: "User successfully registered.",
-  };
 };
 
 const getUserByUsername = async (username) => {
@@ -70,35 +57,33 @@ const validatePassword = async (plaintextPassword, passwordHash) => {
 };
 
 const createRefreshToken = async (user) => {
-  const refreshTokenValue = tokenUtility.generateRefreshToken(user);
-  await RefreshToken.create({
-    valueHash: await cryptoHandler.encrypt(refreshTokenValue),
-    owner: user._id,
-  });
+  const { refreshToken, refreshTokenValue } =
+    await tokenUtility.createRefreshToken(user);
+  await RefreshToken.create(refreshToken);
   return refreshTokenValue;
 };
 
-const logInUser = async (loginData) => {
-  const user = await getUserByUsername(loginData.username);
-  await validatePassword(loginData.password, user.passwordHash);
-  const refreshToken = await createRefreshToken(user);
-  return {
-    accessToken: tokenUtility.generateAccessToken(user),
-    refreshToken: refreshToken,
-  };
+const compareRefreshTokenHash = async (
+  refreshTokenValue,
+  refreshTokenValueHash
+) => {
+  const validation = await cryptoHandler.compare(
+    refreshTokenValue,
+    refreshTokenValueHash
+  );
+  return validation;
 };
 
 const getRefreshTokenByValue = async (value) => {
   const refreshTokens = await RefreshToken.find().populate("owner");
-  const result = await Promise.all(
-    refreshTokens.filter(async (refreshToken) => {
-      const validation = await cryptoHandler.compare(
-        value,
-        refreshToken.valueHash
-      );
-      return validation;
-    })
-  );
+  const result = [];
+  for (const refreshToken of refreshTokens) {
+    const validation = await compareRefreshTokenHash(
+      value,
+      refreshToken.valueHash
+    );
+    if (validation) result.push(refreshToken);
+  }
   if (result.length === 0)
     throw new errors.UnauthenticatedError("Invalid refresh token.");
   return result[0];
@@ -112,12 +97,33 @@ const deleteRefreshToken = async (refreshTokenValue) => {
 const validateRefreshToken = async (refreshTokenValue) => {
   const refreshToken = await getRefreshTokenByValue(refreshTokenValue);
   try {
-    await tokenUtility.verifyRefreshToken(refreshTokenValue);
+    tokenUtility.verifyRefreshToken(refreshToken);
   } catch (error) {
     await deleteRefreshToken(refreshTokenValue);
     throw new errors.UnauthenticatedError("Invalid refresh token.");
   }
   return refreshToken.owner;
+};
+
+const registerUser = async (user) => {
+  await checkUsernameAvailabilty(user.username);
+  await checkEmailAvailabilty(user.email);
+  validatePasswordStrength(user.password);
+  user = await hashPassword(user);
+  await User.create({ ...user });
+  return {
+    message: "User successfully registered.",
+  };
+};
+
+const logInUser = async (loginData) => {
+  const user = await getUserByUsername(loginData.username);
+  await validatePassword(loginData.password, user.passwordHash);
+  const refreshToken = await createRefreshToken(user);
+  return {
+    accessToken: tokenUtility.generateAccessToken(user),
+    refreshToken,
+  };
 };
 
 const refreshAccessToken = async (refreshTokenValue) => {
@@ -130,8 +136,13 @@ const refreshAccessToken = async (refreshTokenValue) => {
   };
 };
 
+const logOutUser = async (refreshTokenValue) => {
+  await deleteRefreshToken(refreshTokenValue);
+};
+
 module.exports = {
   registerUser,
   logInUser,
   refreshAccessToken,
+  logOutUser,
 };

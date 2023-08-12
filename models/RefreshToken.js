@@ -6,15 +6,16 @@ const refreshTokenSchema = new mongoose.Schema(
       type: String,
       required: [true, "Refresh token value field is required."],
     },
-    // expirationDate: {
-    //   type: String,
-    //   required: [true, "Refresh token expiration field is required."],
-    // },
+    expirationDate: {
+      type: Date,
+      required: [true, "Refresh token expiration field is required."],
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "Refresh token owner field is required."],
     },
+    number: Number,
   },
   {
     collection: "refreshTokens",

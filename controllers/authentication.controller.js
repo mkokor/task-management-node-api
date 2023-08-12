@@ -23,6 +23,7 @@ const logInUser = async (req, res) => {
 };
 
 const refreshAccessToken = async (req, res) => {
+  console.log(req.cookies.refreshToken);
   const { accessToken, refreshToken } =
     await authenticationService.refreshAccessToken(req.cookies.refreshToken);
   setRefreshTokenCookie(res, refreshToken);

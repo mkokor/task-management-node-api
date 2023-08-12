@@ -1,24 +1,31 @@
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const errrors = require("../errors/errors");
 
 const getNumberOfSaltRounds = () => {
   return 10;
 };
 
-const encrypt = async (value) => {
+const hash = async (value) => {
   const result = await bcrypt.hash(value, getNumberOfSaltRounds());
   return result;
 };
 
-const compare = async (plaintext, encryptedValue) => {
+const compare = async (value, valueHash) => {
   try {
-    const result = await bcrypt.compare(plaintext, encryptedValue);
+    const result = await bcrypt.compare(value, valueHash);
     return result;
   } catch (error) {
-    throw new Error("Something went wrong.");
+    throw new errrors.InternalServerError("Something went wrong.");
   }
 };
 
+const generateRandomString = () => {
+  return crypto.randomBytes(64).toString("base64");
+};
+
 module.exports = {
-  encrypt,
+  hash,
   compare,
+  generateRandomString,
 };
