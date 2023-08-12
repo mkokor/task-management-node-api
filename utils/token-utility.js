@@ -50,14 +50,13 @@ const createRefreshToken = async (user) => {
 };
 
 const verifyAccessToken = async (accessToken) => {
-  const { username, roles } = verifyJwt(
+  const { username } = verifyJwt(
     accessToken,
     environment.authentication.accessToken.secret,
     "access token"
   );
   return {
     username,
-    roles,
   };
 };
 

@@ -9,6 +9,7 @@ const { connectDatabase } = require("./config/database");
 const { notFoundRoute } = require("./middleware/not-found");
 const { errorHandler } = require("./middleware/error-handler");
 const { taskIdValidation } = require("./middleware/task-id-validation");
+const { authenticateUser } = require("./middleware/authentication");
 
 const app = express();
 const port = environment.application.port;
@@ -16,6 +17,7 @@ const port = environment.application.port;
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+app.use("/api/tasks", authenticateUser);
 app.use("/api/tasks/:id", taskIdValidation);
 
 app.use("/api/authentication", authenticationRoutes);
