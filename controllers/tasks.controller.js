@@ -1,7 +1,7 @@
 const taskService = require("../services/tasks.service");
 
 const getAllTasks = async (req, res) => {
-  const result = await taskService.getAllTasks();
+  const result = await taskService.getAllTasks(req.user);
   res.status(200).json(result);
 };
 
