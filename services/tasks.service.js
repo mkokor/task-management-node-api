@@ -4,7 +4,7 @@ const errors = require("../errors/errors");
 const checkTaskValuePresent = (task) => {
   if (!task)
     throw new errors.NotFoundError(
-      "Task with provided identifier does not exist."
+      "User does not own task with provided identifier."
     );
 };
 
@@ -18,8 +18,8 @@ const getAllTasks = async (user) => {
   return allTasks;
 };
 
-const getTaskById = async (id) => {
-  const task = await Task.findOne({ _id: id });
+const getTaskById = async (taskId, user) => {
+  const task = await Task.findOne({ _id: taskId, owner: user._id });
   checkTaskValuePresent(task);
   return task;
 };

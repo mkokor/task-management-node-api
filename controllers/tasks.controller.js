@@ -10,8 +10,8 @@ const createTask = async (req, res) => {
   res.status(201).json(result);
 };
 
-const getTask = async (req, res) => {
-  const result = await taskService.getTaskById(req.params.id);
+const getTaskById = async (req, res) => {
+  const result = await taskService.getTaskById(req.params.id, req.user);
   res.status(200).json(result);
 };
 
@@ -28,7 +28,7 @@ const deleteTask = async (req, res) => {
 module.exports = {
   getAllTasks,
   createTask,
-  getTask,
+  getTaskById,
   updateTask,
   deleteTask,
 };

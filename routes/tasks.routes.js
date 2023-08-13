@@ -11,7 +11,7 @@ router
 
 router
   .route("/:id")
-  .get(tasksController.getTask)
+  .get(tasksController.getTaskById)
   .patch(tasksController.updateTask)
   .delete(tasksController.deleteTask);
 
