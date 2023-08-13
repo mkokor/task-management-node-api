@@ -1,5 +1,6 @@
 const { verifyAccessToken } = require("../utils/token-utility");
 const errors = require("../errors/errors");
+const { User } = require("../models/User");
 
 const processAuthorizationHeader = (authorizationHeader) => {
   if (!authorizationHeader)
@@ -13,11 +14,12 @@ const processAuthorizationHeader = (authorizationHeader) => {
 };
 
 const authenticateUser = async (req, res, next) => {
-  req.user = await verifyAccessToken(
+  const { username } = await verifyAccessToken(
     processAuthorizationHeader(
       req.headers.authorization || req.headers.Authorization
     )
   );
+  req.user = await User.findOne({ username: username });
   next();
 };
 

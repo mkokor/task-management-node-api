@@ -7,6 +7,7 @@ const validateTaskFields = (req, res, next) => {
     throw new errors.BadRequestError(
       "Title cannot contain more than 20 characters."
     );
+  next();
 };
 
 module.exports = { validateTaskFields };

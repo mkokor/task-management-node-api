@@ -1,4 +1,5 @@
 const { Task } = require("../models/Task");
+const { User } = require("../models/User");
 const errors = require("../errors/errors");
 
 const checkTaskValuePresent = (task) => {
@@ -8,13 +9,13 @@ const checkTaskValuePresent = (task) => {
     );
 };
 
-const createTask = async (task) => {
-  const result = await Task.create(task);
+const createTask = async (task, user) => {
+  const result = await Task.create({ ...task, owner: user._id });
   return result;
 };
 
 const getAllTasks = async () => {
-  const allTasks = await Task.find();
+  const allTasks = await Task.find().populate("owner");
   return allTasks;
 };
 
