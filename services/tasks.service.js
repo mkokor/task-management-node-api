@@ -24,8 +24,8 @@ const getTaskById = async (taskId, user) => {
   return task;
 };
 
-const deleteTask = async (id) => {
-  const task = await Task.findOneAndDelete({ _id: id });
+const deleteTask = async (taskId, user) => {
+  const task = await Task.findOneAndDelete({ _id: taskId, owner: user._id });
   checkTaskValuePresent(task);
 };
 
