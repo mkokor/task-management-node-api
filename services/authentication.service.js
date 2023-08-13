@@ -75,6 +75,7 @@ const compareRefreshTokenHash = async (
 };
 
 const getRefreshTokenByValue = async (value) => {
+  if (!value) throw new errors.UnauthenticatedError("Refresh token missing.");
   const refreshTokens = await RefreshToken.find().populate("owner");
   const result = [];
   for (const refreshToken of refreshTokens) {
@@ -95,8 +96,6 @@ const deleteRefreshToken = async (refreshTokenValue) => {
 };
 
 const validateRefreshToken = async (refreshTokenValue) => {
-  if (!refreshTokenValue)
-    throw new errors.UnauthenticatedError("Refresh token missing.");
   const refreshToken = await getRefreshTokenByValue(refreshTokenValue);
   try {
     tokenUtility.verifyRefreshToken(refreshToken);
@@ -139,6 +138,7 @@ const refreshAccessToken = async (refreshTokenValue) => {
 };
 
 const logOutUser = async (refreshTokenValue) => {
+  if (!refreshTokenValue) return;
   await deleteRefreshToken(refreshTokenValue);
 };
 
