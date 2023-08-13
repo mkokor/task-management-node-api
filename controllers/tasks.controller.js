@@ -16,7 +16,11 @@ const getTaskById = async (req, res) => {
 };
 
 const updateTask = async (req, res) => {
-  const result = await taskService.updateTask(req.params.id, req.body);
+  const result = await taskService.updateTask(
+    req.params.id,
+    req.body,
+    req.user
+  );
   res.status(200).json(result);
 };
 

@@ -95,6 +95,8 @@ const deleteRefreshToken = async (refreshTokenValue) => {
 };
 
 const validateRefreshToken = async (refreshTokenValue) => {
+  if (!refreshTokenValue)
+    throw new errors.UnauthenticatedError("Refresh token missing.");
   const refreshToken = await getRefreshTokenByValue(refreshTokenValue);
   try {
     tokenUtility.verifyRefreshToken(refreshToken);

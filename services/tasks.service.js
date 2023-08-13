@@ -29,11 +29,15 @@ const deleteTask = async (taskId, user) => {
   checkTaskValuePresent(task);
 };
 
-const updateTask = async (id, newValues) => {
-  const updatedTask = await Task.findOneAndUpdate({ _id: id }, newValues, {
-    new: true,
-    runValidators: true,
-  });
+const updateTask = async (taskId, newValues, user) => {
+  const updatedTask = await Task.findOneAndUpdate(
+    { _id: taskId, owner: user._id },
+    newValues,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
   checkTaskValuePresent(updatedTask);
   return updatedTask;
 };
