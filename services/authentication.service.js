@@ -75,7 +75,6 @@ const compareRefreshTokenHash = async (
 };
 
 const getRefreshTokenByValue = async (value) => {
-  if (!value) throw new errors.UnauthenticatedError("Refresh token missing.");
   const refreshTokens = await RefreshToken.find().populate("owner");
   const result = [];
   for (const refreshToken of refreshTokens) {
